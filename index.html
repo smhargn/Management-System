@@ -102,7 +102,7 @@
                             <td>Frozen</td>
                             <td><span id="frozen-stock">0</span></td>
                             <td><span id="frozen-price">0</span></td>
-                            <td><button class="edit-price general-btn" onclick="editPriceBlueberry(0)" data-category="frozen">Edit Price</button></td> <!-- Edit Price butonu -->
+                            <td><button class="edit-price general-btn" onclick="editPriceBlueberry(0)" data-category="frozen">Edit Price</button></td>
                         </tr>
                         <tr id="blueberryStock-organic">
                             <td>Organic</td>
@@ -299,7 +299,7 @@
                 <label for="newPrice">New Price:</label>
                 <input class="general-input" type="number" id="newPrice" min="0" step="0.01">
                 <button class="general-btn" onclick="savePrice()">Save</button>
-                <button class="general-btn" onclick="cancelEdit()">Cancel</button>
+                <button class="general-btn" onclick="cancelEditPrice()">Cancel</button>
             </div>
 
             <h3>Inventory Tracking</h3>
@@ -498,7 +498,7 @@
             <option value="Delivered">Delivered</option>
         </select>
     
-        <button class="general-btn" onclick="applyOrderFilters()" id="applyFilters">Filtrele</button>
+        <button class="general-btn" onclick="applyOrderFilters()" id="applyFilters">Filter</button>
         <button class="general-btn" onclick="renderOrders()" id="applyFilters">Clear</button>
         <button class="general-btn" onclick="exportOrdersToCSV()" id="applyFilters">Export CSV</button>
     </div>

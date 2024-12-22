@@ -194,29 +194,9 @@ function deleteFarmer(index) {
     }
 }
 
-// Farmer'ı düzenle
-function editFarmer(index) {
+function cancelFarmer(index) {
     const farmer = farmers[index];
-    
-
-    const tableBody = document.querySelector("#farmerTable tbody");
-    const tableRow = tableBody.rows[index];
-
-
-    tableRow.innerHTML = `
-        <td><input class="general-input" type="text" value="${farmer.id}" id="editId-${index}" /></td>
-        <td><input class="general-input" type="text" value="${farmer.name}" id="editName-${index}" /></td>
-        <td><input class="general-input" type="text" value="${farmer.contact}" id="editContact-${index}" /></td>
-        <td><input class="general-input" type="text" value="${farmer.location}" id="editLocation-${index}" /></td>
-        <td>
-            <button class="general-btn" onclick="saveFarmer(${index})">Save</button>
-            <button class="general-btn" onclick="cancelEdit(${index})">Cancel</button>
-        </td>
-    `;
-}
-
-function cancelEdit(index) {
-    const farmer = farmers[index];
+    console.log(farmer)
 
     const tableBody = document.querySelector("#farmerTable tbody");
     const tableRow = tableBody.rows[index]; 
@@ -233,8 +213,30 @@ function cancelEdit(index) {
     `;
 }
 
+function editFarmer(index) {
+    const farmer = farmers[index];
+    
+
+    const tableBody = document.querySelector("#farmerTable tbody");
+    const tableRow = tableBody.rows[index];
+
+
+    tableRow.innerHTML = `
+        <td><input class="general-input" type="text" value="${farmer.id}" id="editId-${index}" /></td>
+        <td><input class="general-input" type="text" value="${farmer.name}" id="editName-${index}" /></td>
+        <td><input class="general-input" type="text" value="${farmer.contact}" id="editContact-${index}" /></td>
+        <td><input class="general-input" type="text" value="${farmer.location}" id="editLocation-${index}" /></td>
+        <td>
+            <button class="general-btn" onclick="saveFarmer(${index})">Save</button>
+            <button class="general-btn" onclick="cancelFarmer(${index})">Cancel</button>
+        </td>
+    `;
+}
+
+
+
+
 function saveFarmer(index) {
-    // Düzenlenmiş verileri al
     const updatedFarmer = {
         id: document.getElementById(`editId-${index}`).value,
         name: document.getElementById(`editName-${index}`).value,
@@ -314,10 +316,13 @@ searchCustomerButton.addEventListener("click", () => {
     const idSearch = searchCustomersId.value;
     const nameSearch = searchCustomersName.value.trim().toLowerCase();
     const contactSearch = searchCustomersContact.value;
+    console.log(idSearch);
 
 
     const filteredCustomers = customers.filter(customer => {
-        return (customer.id === idSearch ||
+        
+        return (
+            customer.id == idSearch ||
                 customer.name.toLowerCase() === nameSearch ||
                 customer.contact === contactSearch )
             });
@@ -331,6 +336,7 @@ searchButton.addEventListener("click", () => {
     const nameSearch = searchInputName.value.trim().toLowerCase();
     const contactSearch = searchInputContact.value.trim().toLowerCase();
     const locationSearch = searchInputLocation.value.trim().toLowerCase();
+    console.log(locationSearch)
 
 
     const filteredFarmers = farmers.filter(farmer => {
@@ -416,6 +422,23 @@ function editPriceBlueberry(index) {
         </td>
         <td>
             <button class="general-btn" onclick="savePriceBlueberry(${index})">Save</button>
+        </td>
+    `;
+}
+
+function cancelEditPrice(index) {
+    const category = Object.keys(products)[index];
+
+    const tableBody = document.querySelector("#blueberryStockTable tbody");
+    const tableRow = tableBody.rows[index];
+
+    // Orijinal satırın içeriğini geri yükle
+    tableRow.innerHTML = `
+        <td>${category.charAt(0).toUpperCase() + category.slice(1)}</td>
+        <td>${products[category].stock.toFixed(2)} kg</td>
+        <td>${products[category].price.toFixed(2)} $</td>
+        <td>
+            <button class="general-btn" onclick="editPriceBlueberry(${index})">Edit Price</button>
         </td>
     `;
 }
@@ -571,6 +594,15 @@ function editPrice(button) {
     } else {
         console.error(`No data found for category "${selectedCategory}" and package size "${packageSize}".`);
     }
+}
+
+function cancelEditPrice() {
+    const modal = document.getElementById("editPriceModal");
+    
+    modal.style.display = 'none';
+
+
+    document.getElementById("newPrice").value = "";  
 }
 
 function savePrice() {
@@ -886,6 +918,31 @@ function formatDateForDisplay(dateString) {
     const [year, month, day] = dateString.split("-");
     return `${day}-${month}-${year}`;
 }
+
+    function editPurchase(purchaseId) {
+
+    const rows = document.querySelectorAll("#purchaseTable tbody tr");
+
+
+    rows.forEach(row => {
+        const rowPurchaseId = row.cells[0].innerText; 
+
+        if (rowPurchaseId == purchaseId) {
+            const quantityCell = row.cells[5]; 
+            const currentQuantity = quantityCell.innerText;
+            quantityCell.innerHTML = `<input class="general-input" type="number" id="editQuantityInput-${purchaseId}" value="${currentQuantity}" />`;
+
+    
+            const dateCell = row.cells[3]; 
+            const currentDate = dateCell.innerText.trim(); 
+            const formattedDate = formatDate2(currentDate); 
+            dateCell.innerHTML = `<input class="general-input" type="date" id="editDateInput-${purchaseId}" value="${formattedDate}" required />`;
+
+            const actionCell = row.cells[8]; 
+            actionCell.innerHTML = `<button class="general-btn" onclick="savePurchase(${purchaseId})">Save</button>`;
+        }
+    });
+    }
 
 function savePurchase(purchaseId) {
     const updatedQuantity = parseFloat(document.getElementById(`editQuantityInput-${purchaseId}`).value);
@@ -1281,7 +1338,7 @@ function editCustomer(index) {
         <td><input class="general-input" type="text" value="${customer.address}" id="editAddress-${index}" /></td>
         <td>
             <button class="general-btn" onclick="saveCustomer(${index})">Save</button>
-            <button class="general-btn" onclick="cancelEdit(${index})">Cancel</button>
+            <button class="general-btn" onclick="cancelCustomer(${index})">Cancel</button>
         </td>
     `;
 }
@@ -1289,7 +1346,7 @@ function editCustomer(index) {
 
 function saveCustomer(index) {
     const updatedCustomer = {
-        id: document.getElementById(`editId-${index}`).value,
+        id:parseInt(document.getElementById(`editId-${index}`).value, 10),
         name: document.getElementById(`editName-${index}`).value,
         contact: document.getElementById(`editContact-${index}`).value,
         address: document.getElementById(`editAddress-${index}`).value,
@@ -1330,6 +1387,29 @@ function saveCustomer(index) {
     populateCustomerSelect('customerSelect-order');
 
     renderCustomerTable();
+}
+
+function cancelCustomer(index) {
+    const customer = customers[index];
+
+    if (!customer) {
+        alert('Customer not found!');
+        return;
+    }
+
+    const tableBody = document.querySelector("#customerTable tbody");
+    const tableRow = tableBody.rows[index];
+
+    tableRow.innerHTML = `
+        <td>${customer.id}</td>
+        <td>${customer.name}</td>
+        <td>${customer.contact}</td>
+        <td>${customer.address}</td>
+        <td>
+            <button class="general-btn" onclick="editCustomer(${index})">Edit</button>
+            <button class="general-btn" onclick="deleteCustomer(${index})">Delete</button>
+        </td>
+    `;
 }
 
 document.getElementById('exportCustomerButton').addEventListener('click', () => {
