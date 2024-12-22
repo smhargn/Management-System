@@ -108,6 +108,12 @@ function validateForm(id, name, contact, location, farmers) {
         return false;
     }
 
+    const contactRegex = /^[0-9]+$/;
+    if (!contact || !contactRegex.test(contact)) {
+        alert("Contact must only contain numbers.");
+        return;
+    }
+
     if (!contact || contact.length < 10 || contact.length > 11) {
         alert("Contact must be exactly 10 or 11 digits long.");
         return false;
@@ -123,8 +129,8 @@ function validateForm(id, name, contact, location, farmers) {
         return false;
     }
 
-    if (!location) {
-        alert("Please provide a valid location.");
+    if (!location || !/[a-zA-ZçÇşŞğĞıİüÜöÖ\s]+/.test(location)) {
+        alert("Please provide a valid location containing only letters.");
         return false;
     }
 
@@ -139,7 +145,7 @@ farmerForm.addEventListener("submit", (e) => {
     const contact = document.getElementById("farmerContact").value.trim();
     const location = document.getElementById("farmerLocation").value.trim();
 
-    // ID doğrulaması (sadece rakamlar)
+    
     if (validateForm(id, name, contact, location,farmers)) {
         console.log("Form is valid.");
     } else {
@@ -159,6 +165,14 @@ farmerForm.addEventListener("submit", (e) => {
     saveFarmersToLocalStorage();
     populateFarmerDropdown();
     renderFarmers();
+
+    farmers.forEach(farmer => {
+        const option = document.createElement("option");
+        option.value = farmer.id;
+        option.textContent = farmer.name;
+        purchaseFarmerId.appendChild(option);
+    });
+
     farmerForm.reset();
     farmerForm.querySelector("button").textContent = "Save"; 
 });
@@ -283,6 +297,12 @@ function saveFarmer(index) {
         return false;
     }
 
+    const contactRegex = /^[0-9]+$/;
+    if (!updatedFarmer.contact || !contactRegex.test(updatedFarmer.contact)) {
+        alert("Contact must only contain numbers.");
+        return;
+    }
+
 
     if (!updatedFarmer.contact || updatedFarmer.contact.length < 10 || updatedFarmer.contact.length > 11) {
         alert("Contact must be exactly 10 or 11 digits long.");
@@ -295,8 +315,9 @@ function saveFarmer(index) {
         return false;
     }
 
-    if (!updatedFarmer.location) {
-        alert("Please provide a valid location.");
+
+    if (!updatedFarmer.location || !/[a-zA-ZçÇşŞğĞıİüÜöÖ\s]+/.test(location)) {
+        alert("Please provide a valid location containing only letters.");
         return false;
     }
 
@@ -767,8 +788,22 @@ blueberryForm.addEventListener("submit", (e) => {
     }
 
     // Convert Date
-    const [year, month, day] = dateInput.split("-"); //  YYYY-MM-DD
+    const [year, month, day] = dateInput.split("-"); // yyyy-mm-dd
     const purchaseDate = `${day}-${month}-${year}`;
+
+    const currentDate = new Date();
+    const selectedDate = new Date(year, month - 1, day); 
+
+
+    const yearDifference = (currentDate - selectedDate) / (1000 * 60 * 60 * 24 * 365); 
+
+    if (selectedDate > currentDate) {
+        alert("You cannot place an order for a future date.");
+        return;
+    } else if (yearDifference > 2) {
+        alert("You cannot place an order for a date more than 2 years ago.");
+        return;
+    }
 
     if (!selectedFarmerId || !selectedCategory || isNaN(quantity) || quantity <= 0) {
         alert("Choose valid farmer.");
@@ -965,14 +1000,31 @@ function savePurchase(purchaseId) {
             console.error(`No category found: ${category}`);
         }
 
+
         purchase.quantity = updatedQuantity;
-        purchase.date = updatedDate;
+        purchase.date = formatDate2(updatedDate);
+
+        const currentDate = new Date();
+        const selectedDate = new Date(year, month - 1, day); 
+    
+        const yearDifference = (currentDate - selectedDate) / (1000 * 60 * 60 * 24 * 365); 
+    
+        if (selectedDate > currentDate) {
+            alert("You cannot place an order for a future date.");
+            return;
+        } else if (yearDifference > 2) {
+            alert("You cannot place an order for a date more than 2 years ago.");
+            return;
+        }
 
         const pricePerKg = products[category]?.price || 0;
         purchase.priceperkg = pricePerKg;
         purchase.totalPrice = updatedQuantity * pricePerKg;
 
-        updatePurchaseTableRow(purchaseId, updatedQuantity, updatedDate, pricePerKg, purchase.totalPrice);
+        console.log(updatedDate);
+        console.log("SSS : "+formatDate2(updatedDate))
+
+        updatePurchaseTableRow(purchaseId, updatedQuantity, formatDate2(updatedDate), pricePerKg, purchase.totalPrice);
         updateBlueberryStockDisplay();
         updateSimpleInventoryDisplay();
         savePurchasesToLocalStorage();
@@ -1246,19 +1298,25 @@ document.getElementById("addCustomerButton").addEventListener("click", () => {
     const lastCustomerId = customers.length > 0 ? parseInt(customers[customers.length - 1].id, 10) : 0; 
     const newCustomerId = lastCustomerId + 1;
 
-    const nameRegex = /^[a-zA-ZçÇşŞğĞıİüÜöÖ\s]+$/;
-    if (!customerName || !nameRegex.test(customerName)) {
-        alert("Name cannot contain numbers or special characters. Please enter a valid name.");
+    const contactRegex = /^[0-9]+$/;
+    if (!customerContact || !contactRegex.test(customerContact)) {
+        alert("Contact must only contain numbers.");
         return;
     }
 
-    if (!customerContact || customerContact.length < 10 || customerContact.length > 11) {
+    if (customerContact.length < 10 || customerContact.length > 11) {
         alert("Contact must be exactly 10 or 11 digits long.");
         return;
-    }else if (customerContact.length === 11 || customerContact[0] === "0") {
-        alert("it should not start with 0.");
+    } else if (customerContact.length === 11 || customerContact[0] === "0") {
+        alert("Contact should not start with 0.");
         return;
     }
+
+    if (!customerAddress || !/[a-zA-ZçÇşŞğĞıİüÜöÖ\s]+/.test(customerAddress)) {
+        alert("Please provide a valid location containing only letters.");
+        return false;
+    }
+    
 
     const newCustomer = {
         id: newCustomerId,  
@@ -1370,6 +1428,17 @@ function saveCustomer(index) {
     if (!updatedCustomer.name || !nameRegex.test(updatedCustomer.name)) {
         alert("Name cannot contain numbers or special characters. Please enter a valid name.");
         return;
+    }
+
+    const contactRegex = /^[0-9]+$/;
+    if (!updatedCustomer.contact || !contactRegex.test(updatedCustomer.contact)) {
+        alert("Contact must only contain numbers.");
+        return;
+    }
+
+    if (!updatedCustomer.address || !/[a-zA-ZçÇşŞğĞıİüÜöÖ\s]+/.test(updatedCustomer.address)) {
+        alert("Please provide a valid location containing only letters.");
+        return false;
     }
 
     if (!updatedCustomer.contact || updatedCustomer.contact.length < 10 || updatedCustomer.contact.length > 11) {
@@ -1488,9 +1557,22 @@ orderForm.addEventListener("submit", (e) => {
         return;
     }
 
-    // Convert day
     const [year, month, day] = dateInput.split("-"); // yyyy-mm-dd
     const orderDate = `${day}-${month}-${year}`;
+
+    const currentDate = new Date();
+    const selectedDate = new Date(year, month - 1, day); 
+
+
+    const yearDifference = (currentDate - selectedDate) / (1000 * 60 * 60 * 24 * 365); 
+
+    if (selectedDate > currentDate) {
+        alert("You cannot place an order for a future date.");
+        return;
+    } else if (yearDifference > 2) {
+        alert("You cannot place an order for a date more than 2 years ago.");
+        return;
+    }
 
     if (!customerName) {
         alert("Please select a customer.");
