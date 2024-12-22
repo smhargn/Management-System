@@ -2097,31 +2097,31 @@ renderFarmers();
 
 const defaultProductCategories = {
     frozen: {
-        small: { weight: 100, pricePerKg: 2, stock: 0 },
-        medium: { weight: 250, pricePerKg: 4, stock: 0 },
-        large: { weight: 500, pricePerKg: 7, stock: 0 },
-        extraLarge: { weight: 1000, pricePerKg: 12, stock: 0 },
-        familyPack: { weight: 2000, pricePerKg: 10, stock: 0 },
-        bulkPack: { weight: 5000, pricePerKg: 9, stock: 0 },
-        premium: { weight: 0, pricePerKg: 0, stock: 0 }
+        small: { weight: 100, pricePerKg: 14, stock: 0 },
+        medium: { weight: 250, pricePerKg: 12, stock: 0 },
+        large: { weight: 500, pricePerKg: 10, stock: 0 },
+        extraLarge: { weight: 1000, pricePerKg: 8, stock: 0 },
+        familyPack: { weight: 2000, pricePerKg: 7, stock: 0 },
+        bulkPack: { weight: 5000, pricePerKg: 6.25, stock: 0 },
+        premium: { weight: 'custom', pricePerKg: 'Varies', stock: 0 }
     },
     organic: {
-        small: { weight: 100, pricePerKg: 3, stock: 0 },
-        medium: { weight: 250, pricePerKg: 5, stock: 0 },
-        large: { weight: 500, pricePerKg: 8, stock: 0 },
-        extraLarge: { weight: 1000, pricePerKg: 13, stock: 0 },
-        familyPack: { weight: 2000, pricePerKg: 11, stock: 0 },
-        bulkPack: { weight: 5000, pricePerKg: 10, stock: 0 },
-        premium: { weight: 0, pricePerKg: 0, stock: 0 }
+        small: { weight: 100, pricePerKg: 13, stock: 0 },
+        medium: { weight: 250, pricePerKg: 11, stock: 0 },
+        large: { weight: 500, pricePerKg: 10, stock: 0 },
+        extraLarge: { weight: 1000, pricePerKg: 9, stock: 0 },
+        familyPack: { weight: 2000, pricePerKg: 6, stock: 0 },
+        bulkPack: { weight: 5000, pricePerKg: 5, stock: 0 },
+        premium: { weight: 'custom', pricePerKg: 'Varies', stock: 0 }
     },
     fresh: {
-        small: { weight: 100, pricePerKg: 2.5, stock: 0 },
-        medium: { weight: 250, pricePerKg: 4.5, stock: 0 },
-        large: { weight: 500, pricePerKg: 7.5, stock: 0 },
-        extraLarge: { weight: 1000, pricePerKg: 12.5, stock: 0 },
-        familyPack: { weight: 2000, pricePerKg: 10.5, stock: 0 },
-        bulkPack: { weight: 5000, pricePerKg: 9.5, stock: 0 },
-        premium: { weight: 0, pricePerKg: 0, stock: 0 }
+        small: { weight: 100, pricePerKg: 12, stock: 0 },
+        medium: { weight: 250, pricePerKg: 10, stock: 0 },
+        large: { weight: 500, pricePerKg: 8.5, stock: 0 },
+        extraLarge: { weight: 1000, pricePerKg: 7.5, stock: 0 },
+        familyPack: { weight: 2000, pricePerKg: 6, stock: 0 },
+        bulkPack: { weight: 5000, pricePerKg: 4.8, stock: 0 },
+        premium: { weight: 'custom', pricePerKg: 'Varies', stock: 0 }
     }
 };
 
@@ -2161,9 +2161,9 @@ function loadBlueberryStockFromLocalStorage() {
         return JSON.parse(savedProducts);
     }
     return { 
-        frozen: {stock: 0, price: 7, storageLocation: "Warehouse 1", restockDate: "15-12-2024"},
-        organic: {stock: 0, price: 10, storageLocation: "Warehouse 2", restockDate: "15-12-2024"},
-        fresh: {stock: 0, price: 12, storageLocation: "Warehouse 3", restockDate: "15-12-2024"}
+        frozen: {stock: 0, price: 7, storageLocation: "Warehouse 1", restockDate: "22-12-2024"},
+        organic: {stock: 0, price: 10, storageLocation: "Warehouse 2", restockDate: "22-12-2024"},
+        fresh: {stock: 0, price: 12, storageLocation: "Warehouse 3", restockDate: "22-12-2024"}
     };
 }
 
