@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Blueberry Management System</title>
+</head>
+<body>
+    <header>
+        <h1>Blueberry Management System</h1>
+    </header>
+    <nav>
+        <div class="buttons">
+        <button onclick="showSection('customers')">Customers' Information</button>
+        <button onclick="showSection('farmers')">Farmers' Information</button>
+        <button onclick="showSection('purchases')">Purchase Records</button>
+        <button onclick="showSection('productCategorization')">Product Categorization</button>
+        <button onclick="showSection('salesManagement')">Sales Management</button>
+        <button onclick="showSection('section-sales-reports')">Sales Reports</button>
+        <button onclick="showSection('blueberrySection')">Blueberry Management</button>
+        <button onclick="showSection('end-of-report')">End Of Report</button>
+        <button onclick="showSection('financialAnalysis')">Finance</button>
+    </div>
+        <div class="alerts">
+
+        </div>
+    </nav>
+    <main>
+
+        <section id="financialAnalysis" class="hidden">
+            <h3>Financial Analysis</h3>
+        
+            <div>
+                <label for="periodSelect-finance">Select Period:</label>
+                <select class="general-select" id="periodSelect-finance">
+                    <option value="daily">Daily</option>
+                    <option value="monthly">Monthly</option>
+                    <option value="quarterly">Quarterly</option>
+                    <option value="yearly">Yearly</option>
+                </select>
+            </div>
+            
+            <div>
+                <label for="datePicker-finance">Select Date:</label>
+                <input class="general-input" type="date" id="datePicker-finance" />
+            </div>
+        
+            <button class="general-btn" id="generateFinancialReport">Generate Financial Report</button>
+            <button class="general-btn" onclick="exportFinancialReportToCSV()" id="export-financial-report">Export CSV</button>
+            <div id="financialReport"></div>
+        </section>
+
+        <section id="end-of-report" class="hidden">
+            <h3>End Of Report</h3>
+            <label for="periodSelect">Select Period:</label>
+            <select class="general-select" id="periodSelect">
+                <option value="daily">Daily</option>
+                <option value="monthly">Monthly</option>
+                <option value="quarterly">Quarterly</option>
+                <option value="yearly">Yearly</option>
+            </select>
+        
+            <label for="dateInput">Choose Date:</label>
+            <input class="general-input" type="date" id="dateInput">
+            <button class="general-btn" id="generateEndOfPeriodReport">Generate End Of Report</button>
+            <button class="general-btn" onclick="exportEndOfPeriodReportToCSV()" id="export-end-of-report">Export CSV</button>
+            <div id="end-of-report-div" ></div>
+            <pre id="end-of-report-div"></pre>
+        </section>
+
+        <section id="blueberrySection" class="hidden">
+            <h2>Blueberry Buy</h2>
+            <form id="blueberryForm" >
+                <label for="farmerDropdown"></label>
+                <select id="farmerDropdown"></select>
+
+                <label for="blueberryCategoryDropdown"></label>
+                <select id="blueberryCategoryDropdown"></select>
+                
+
+                <label for="blueberryQuantity"></label>
+                <input type="number" id="blueberryQuantity" placeholder="Blueberry (kg)" min="0" step="0.1" required>
+
+                <label for="blueberryDate"></label>
+                <input type="date" id="blueberryDate" required>
+        
+                <button type="submit">Ekle</button>
+            </form>
+            <div id="inventoryStatus">
+                <table id="blueberryStockTable">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Stock (kg)</th>
+                            <th>Price (per kg)</th>
+                            <th>Action</th> <!-- Eylem sütunu eklendi -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr id="blueberryStock-frozen">
+                            <td>Frozen</td>
+                            <td><span id="frozen-stock">0</span></td>
+                            <td><span id="frozen-price">0</span></td>
+                            <td><button class="edit-price general-btn" onclick="editPriceBlueberry(0)" data-category="frozen">Edit Price</button></td> <!-- Edit Price butonu -->
+                        </tr>
+                        <tr id="blueberryStock-organic">
+                            <td>Organic</td>
+                            <td><span id="organic-stock">0</span></td>
+                            <td><span id="organic-price">0</span></td>
+                            <td><button class="edit-price general-btn" onclick="editPriceBlueberry(1)" data-category="organic">Edit Price</button></td>
+                        </tr>
+                        <tr id="blueberryStock-fresh">
+                            <td>Fresh</td>
+                            <td><span id="fresh-stock">0</span></td>
+                            <td><span id="fresh-price">0</span></td>
+                            <td><button class="edit-price general-btn" onclick="editPriceBlueberry(2)" data-category="fresh">Edit Price</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            <br><br>
+            <button id="generateReportButton">Envanter Raporunu Göster</button>
+            <div id="reportContainer"></div>
+        </div>
+        </section>
+
+        <!-- Customers' Information -->
+        <section id="customers" class="hidden">
+            <h1>Customer Management</h1>
+
+            <div class="search-container">
+                <input class="search-customer-id" type="number" placeholder="Search by ID">
+                <input class="search-customer-name" type="text" placeholder="Search by Name">
+                <input class="search-customer-contact" type="text" placeholder="Search by Contact">
+                <button class="search-customer-btn">Search</button>
+                <button class="clear-search-btn" onclick="renderCustomerTable()">Clear</button>
+            </div>
+
+            <div class="add-customer-container">
+                <h1>Add New Customer</h1>
+                <input class="customer-name general-input" type="text" placeholder="Enter Name" id="customerName" required>
+                <input class="customer-contact general-input" type="text" placeholder="Enter Contact" id="customerContact" required>
+                <input class="customer-address general-input" type="text" placeholder="Enter Adress" id="customerAddress" required>
+                <button class="add-customer-btn general-btn" id="addCustomerButton">Add Customer</button>
+                <button class="export-customer-btn general-btn" id="exportCustomerButton">Export CSV</button>
+            </div>
+        
+            <table id="customerTable" border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Address</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        
+        <!-- Farmers' Information -->
+        <section id="farmers" class="hidden">
+            <h1>Farmer Management</h1>
+
+            <div class="search-container">
+                <input class="searchInputId" type="number" placeholder="Search by ID">
+                <input class="searchInputName" type="text" placeholder="Search by Name">
+                <input class="searchInputContact" type="text" placeholder="Search by Contact">
+                <input class="searchInputLocation" type="text" placeholder="Search by Location">
+                <button class="search-btn">Search</button>
+                <button class="export-farmers-btn">Export Farmers</button>
+                <button class="clear-search-btn" onclick="renderFarmers()">Clear</button>
+            </div>
+
+            <h1>Add New Farmer</h1>
+
+            <form id="farmerForm">
+                <input type="text" id="farmerId" placeholder="Farmer ID" required>
+                <input type="text" id="farmerName" placeholder="Name" required>
+                <input type="text" id="farmerContact" placeholder="Contact" required>
+                <input type="text" id="farmerLocation" placeholder="Location" required>
+                <button type="submit">Save</button>
+            </form>
+        
+            <table id="farmerTable" border="1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Contact</th>
+                        <th>Location</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        <!-- Product Categorization -->
+        <section id="productCategorization" class="hidden">
+            <h2>Product Categorization and Packaging</h2>
+            <form id="categorizeForm">
+                <select id="productCategory">
+                    <option value="small">Small (100g)</option>
+                    <option value="medium">Medium (250g)</option>
+                    <option value="large">Large (500g)</option>
+                    <option value="extraLarge">Extra Large (1kg)</option>
+                    <option value="familyPack">Family Pack (2kg)</option>
+                    <option value="bulkPack">Bulk Pack (5kg)</option>
+                    <option value="premium">Premium (Custom weight)</option>
+                </select>
+                
+                <select id="blueberryCategory">
+                    <option value="frozen">Frozen</option>
+                    <option value="organic">Organic</option>
+                    <option value="fresh">Fresh</option>
+                </select>
+
+                <div id="premiumWeightInput" style="display:none;">
+                    <input type="number" id="premiumWeight" placeholder="Enter custom weight for Premium" >
+                </div>
+
+                <input type="number" id="productQuantity" placeholder="Quantity" required>
+                <button type="submit">Categorize and Package</button>
+
+            
+            </form>
+            <div id="inventoryStatus">
+                <table id="blueberryStock-package" border="1" style="width: 100%; border-collapse: collapse;">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Stock (kg)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3>Pricing Structure</h3>
+            <select class="general-select" id="categorySelectPrice" onchange="updateTableCategory()">
+                <option value="frozen">Frozen</option>
+                <option value="organic">Organic</option>
+                <option value="fresh">Fresh</option>
+            </select>
+            
+            <table id="pricingTable" border="1">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Price per kg</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Small (100g)</td>
+                        <td class="price" data-category="small">$2</td>
+                        <td><button class="general-btn" onclick="editPrice(this)" data-category="small">Edit</button></td>
+                    </tr>
+                    <tr>
+                        <td>Medium (250g)</td>
+                        <td class="price" data-category="medium">$4</td>
+                        <td><button class="general-btn" onclick="editPrice(this)" data-category="medium">Edit</button></td>
+                    </tr>
+                    <tr>
+                        <td>Large (500g)</td>
+                        <td class="price" data-category="large">$7</td>
+                        <td><button class="general-btn" onclick="editPrice(this)" data-category="large">Edit</button></td>
+                    </tr>
+                    <tr>
+                        <td>Extra Large (1kg)</td>
+                        <td class="price" data-category="extraLarge">$12</td>
+                        <td><button class="general-btn" onclick="editPrice(this)" data-category="extraLarge">Edit</button></td>
+                    </tr>
+                    <tr>
+                        <td>Family Pack (2kg)</td>
+                        <td class="price" data-category="familyPack">$20</td>
+                        <td><button class="general-btn" onclick="editPrice(this)" data-category="familyPack">Edit</button></td>
+                    </tr>
+                    <tr>
+                        <td>Bulk Pack (5kg)</td>
+                        <td class="price" data-category="bulkPack">$45</td>
+                        <td><button class="general-btn" onclick="editPrice(this)" data-category="bulkPack">Edit</button></td>
+                    </tr>
+                    <tr>
+                        <td>Premium (Custom weight)</td>
+                        <td class="price" data-category="premium">$Varies</td>
+                        <td><button class="general-btn" onclick="editPrice(this)" data-category="premium">Edit</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div id="editPriceModal" style="display:none;">
+                <h3>Edit Price</h3>
+                <label for="newPrice">New Price:</label>
+                <input class="general-input" type="number" id="newPrice" min="0" step="0.01">
+                <button class="general-btn" onclick="savePrice()">Save</button>
+                <button class="general-btn" onclick="cancelEdit()">Cancel</button>
+            </div>
+
+            <h3>Inventory Tracking</h3>
+
+            <!-- Dropdown to select category -->
+            <select class="general-select" id="categorySelect">
+                <option value="frozen">Frozen</option>
+                <option value="organic">Organic</option>
+                <option value="fresh">Fresh</option>
+            </select>
+            
+            <!-- Inventory Table -->
+            <table id="inventoryTable" border="1">
+                <thead>
+                    <tr>
+                        <th>Category</th>
+                        <th>Stock Level</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Small (100g)</td>
+                        <td id="smallStock">0</td>
+                    </tr>
+                    <tr>
+                        <td>Medium (250g)</td>
+                        <td id="mediumStock">0</td>
+                    </tr>
+                    <tr>
+                        <td>Large (500g)</td>
+                        <td id="largeStock">0</td>
+                    </tr>
+                    <tr>
+                        <td>Extra Large (1kg)</td>
+                        <td id="extraLargeStock">0</td>
+                    </tr>
+                    <tr>
+                        <td>Family Pack (2kg)</td>
+                        <td id="familyPackStock">0</td>
+                    </tr>
+                    <tr>
+                        <td>Bulk Pack (5kg)</td>
+                        <td id="bulkPackStock">0</td>
+                    </tr>
+                    <tr>
+                        <td>Premium (Custom)</td>
+                        <td id="premiumStock">0</td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <!-- Purchase Records -->
+        <section id="purchases" class="hidden">
+            <h2>Purchase Records</h2>
+            <form id="purchaseForm">
+                <select id="purchaseFarmerId"></select>
+                <select id="purchaseCategoryId"></select>
+
+                <!-- <input type="date" id="purchaseDate" required> -->
+
+                <label>Start Date :</label>
+                <input type="date" id="startDate" required>
+                <label>End Date:</label>
+                <input  type="date" id="endDate" required>
+
+
+                <button type="submit">Filter</button>
+                <button type="button" id="clearFilterButton">Clear</button>
+                <button type="button" id="exportPurchasesButton">Export</button>
+            </form>
+            <table id="purchaseTable" border="1">
+                <thead>
+                    <tr>
+                        <th onclick="sortPurchasesTable('purchaseId')">Purchase ID</th>
+                        <th onclick="sortPurchasesTable('farmerId')">Farmer ID</th>
+                        <th onclick="sortPurchasesTable('farmerName')">Farmer Name</th>
+                        <th onclick="sortPurchasesTable('date')">Date</th>
+                        <th onclick="sortPurchasesTable('category')">Category</th>
+                        <th onclick="sortPurchasesTable('quantity')">Quantity</th>
+                        <th onclick="sortPurchasesTable('priceperkg')">Price Per Kg</th>
+                        <th onclick="sortPurchasesTable('totalPrice')">Total Price</th>
+                        <th>Actions</th>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <div id="totals">
+                <p>Total Quantity: <span id="totalQuantity">0</span></p>
+                <p>Total Price: <span id="totalPrice">0</span></p>
+            </div>
+        </section>
+        
+
+        <!-- Expense Calculation -->
+        <section id="expenses" class="hidden">
+            <h2>Expense Calculation</h2>
+            <button onclick="calculateExpenses()">Calculate Total Expenses</button>
+            <p>Total Expenses: <span id="totalExpenses">0</span></p>
+        </section>
+
+        <!-- Sales Management Section -->
+<!-- Sales Management Section -->
+    <section id="salesManagement" class="hidden">
+    <h2>Sales Management</h2>
+    
+    <!-- Order Form -->
+    <h3>Log New Order</h3>
+    <form id="orderForm">
+        <label for="customerSelect">Select Customer</label>
+        <select id="customerSelect" required>
+            <option value="">Select a Customer</option>
+
+        </select>
+        
+        <label for="packageOrder">Product Category</label>
+        <select id="packageOrder">
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+            <option value="extraLarge">Extra Large</option>
+            <option value="familyPack">Family Pack</option>
+            <option value="bulkPack">Bulk Pack</option>
+            <option value="premium">Premium</option>
+        </select>
+        
+        <label for="blueberryCategoryOrder">Product Category</label>
+        <select id="blueberryCategoryOrder">
+            <option value="frozen">Frozen</option>
+            <option value="organic">Organic</option>
+            <option value="fresh">Fresh</option>
+        </select>
+        
+        <label for="quantityOrdered">Quantity</label>
+        <input type="number" id="quantityOrdered" required min="1">
+
+        <label for="orderDate"></label>
+        <input type="date" id="orderDate" required>
+        
+        <button type="submit">Log Order</button>
+    </form>
+
+
+    </select>
+
+    <table id="customerStatisticsTable">
+        <thead>
+            <tr>
+                <th>Product Category</th>
+                <th>Total Quantity Ordered</th>
+                <th>Total Price</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        </tbody>
+    </table>
+
+    <h3>Order History</h3>
+
+    <div id="filters-orders">
+
+
+        <label>Start Date :</label>
+        <input class="general-select" type="date" id="order-start-date" required>
+        <label>End Date :</label>
+        <input class="general-select" type="date" id="order-end-date" required>
+    
+        <select class="general-select" id="customerSelect-order">
+
+        </select>
+    
+        <select class="general-select" id="order-category-select">
+            <option value="all">All Category</option>
+            <option value="frozen">Frozen</option>
+            <option value="organic">Organic</option>
+            <option value="fresh">Fresh</option>
+        </select>
+
+        <label for="order-package-select">Package Size</label>
+        <select class="general-select" id="order-package-select">
+            <option value="all">All Sizes</option>
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+            <option value="extraLarge">Extra Large</option>
+            <option value="familyPack">Family Pack</option>
+            <option value="bulkPack">Bulk Pack</option>
+            <option value="premium">Premium</option>
+        </select>
+
+        <select class="general-select" id="order-status-select">
+            <option value="allStatus">All Status</option>
+            <option value="Pending">Pending</option>
+            <option value="Processed">Processed</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Delivered">Delivered</option>
+        </select>
+    
+        <button class="general-btn" onclick="applyOrderFilters()" id="applyFilters">Filtrele</button>
+        <button class="general-btn" onclick="renderOrders()" id="applyFilters">Clear</button>
+        <button class="general-btn" onclick="exportOrdersToCSV()" id="applyFilters">Export CSV</button>
+    </div>
+
+    <table id="ordersTable">
+        <thead>
+            <tr>
+                <th onclick="sortOrdersTable('orderId')">Order ID</th>
+                <th onclick="sortOrdersTable('customerName')">Customer Name</th>
+                <th onclick="sortOrdersTable('orderDate')">Order Date</th>
+                <th onclick="sortOrdersTable('blueberryCategory')">Blueberry Category</th>
+                <th onclick="sortOrdersTable('productCategory')">Product Category</th>
+                <th onclick="sortOrdersTable('quantityOrdered')">Quantity</th>
+                <th onclick="sortOrdersTable('totalPrice')">Total Price</th>
+                <th onclick="sortOrdersTable('status')">Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <div id="updateStatusModal" >
+        <h3>Update Order Status</h3>
+        <div id="statusButtons">
+            <button class="general-btn" onclick="updateStatus('Processed')">Processed</button>
+            <button class="general-btn" onclick="updateStatus('Shipped')">Shipped</button>
+            <button class="general-btn" onclick="updateStatus('Delivered')">Delivered</button>
+        </div>
+        <button class="general-red-btn" onclick="closeModal()">Cancel</button>
+    </div>
+
+    
+    </section>
+
+    <section id="section-sales-reports" class="hidden">
+        <h3>Sales Reports</h3>
+    <div id="sales-reports">
+        <label for="report-start-date">Start Date:</label>
+        <input class="general-select" type="date" id="report-start-date">
+        <label for="report-end-date">End Date:</label>
+        <input class="general-select" type="date" id="report-end-date">
+
+        <select class="general-select" id="report-blueberry-category">
+            <option value="all">All Category</option>
+            <option value="frozen">Frozen</option>
+            <option value="organic">Organic</option>
+            <option value="fresh">Fresh</option>
+        </select>
+
+        <label for="report-package-category">Product Category</label>
+        <select class="general-select" id="report-package-category">
+            <option value="all">All Sizes</option>
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+            <option value="extraLarge">Extra Large</option>
+            <option value="familyPack">Family Pack</option>
+            <option value="bulkPack">Bulk Pack</option>
+            <option value="premium">Premium</option>
+        </select>
+
+        <button id="generate-sales-report" class="general-btn" onclick="generateSalesReports()">Generate Report</button>
+        <button class="general-btn" id="export-sales-report" onclick="exportSalesReportToCSV()" >Export to CSV</button>
+    </div>
+
+    <div id="report-output">
+        <h4>Report Summary</h4>
+        <table id="sales-report-table">
+            <thead>
+                <tr> 
+                    <th>Blueberry Category</th>
+                    <th>Package Size</th>
+                    <th>Revenue</th>
+                    <th>Units Sold</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <p>Total Revenue: <span id="total-revenue">$0.00</span></p>
+        <p>Total Units Sold: <span id="total-units-sold">0</span></p>
+    </div>
+    </section>
+
+
+
+    </main>
+    <script src="script.js" defer></script>
+
+
+</body>
+</html>
