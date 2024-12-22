@@ -2161,9 +2161,9 @@ function loadBlueberryStockFromLocalStorage() {
         return JSON.parse(savedProducts);
     }
     return { 
-        frozen: {stock: 0, price: 7, storageLocation: "Warehouse 1", restockDate: "22-12-2024"},
-        organic: {stock: 0, price: 10, storageLocation: "Warehouse 2", restockDate: "22-12-2024"},
-        fresh: {stock: 0, price: 12, storageLocation: "Warehouse 3", restockDate: "22-12-2024"}
+        frozen: {stock: 0, price: 2, storageLocation: "Warehouse 1", restockDate: "22-12-2024"},
+        organic: {stock: 0, price: 3, storageLocation: "Warehouse 2", restockDate: "22-12-2024"},
+        fresh: {stock: 0, price: 4, storageLocation: "Warehouse 3", restockDate: "22-12-2024"}
     };
 }
 
