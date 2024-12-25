@@ -57,6 +57,7 @@ const searchInputLocation =document.querySelector('.searchInputLocation')
 const searchCustomersId = document.querySelector('.search-customer-id');
 const searchCustomersName = document.querySelector('.search-customer-name');
 const searchCustomersContact = document.querySelector('.search-customer-contact');
+const searchCustomersAddress = document.querySelector('.search-customer-address');
 const searchButton = document.querySelector('.search-btn');
 const searchCustomerButton = document.querySelector('.search-customer-btn');
 const exportButton = document.querySelector('.export-farmers-btn')
@@ -333,40 +334,67 @@ function saveFarmer(index) {
 }
 
 
-searchCustomerButton.addEventListener("click", () => {
-    const idSearch = searchCustomersId.value;
-    const nameSearch = searchCustomersName.value.trim().toLowerCase();
-    const contactSearch = searchCustomersContact.value;
-    console.log(idSearch);
 
+searchCustomerButton.addEventListener("click", () => {
+    const idSearch = searchCustomersId.value.trim(); 
+    const nameSearch = searchCustomersName.value.trim().toLowerCase();
+    const contactSearch = searchCustomersContact.value.trim();
+    const addressSearch = searchCustomersAddress.value.trim();
 
     const filteredCustomers = customers.filter(customer => {
-        
-        return (
-            customer.id == idSearch ||
-                customer.name.toLowerCase() === nameSearch ||
-                customer.contact === contactSearch )
-            });
 
+        let match = true;
+
+        if (idSearch) {
+            match = match && customer.id == idSearch;
+        }
+
+        if (nameSearch) {
+            match = match && customer.name.toLowerCase() === nameSearch;
+        }
+
+        if (contactSearch) {
+            match = match && customer.contact === contactSearch;
+        }
+
+        if (addressSearch) {
+            match = match && customer.address === addressSearch;
+        }
+
+        return match; 
+    });
 
     renderCustomerTable(filteredCustomers);
 });
+
 
 searchButton.addEventListener("click", () => {
     const idSearch = searchInputId.value.trim().toLowerCase();
     const nameSearch = searchInputName.value.trim().toLowerCase();
     const contactSearch = searchInputContact.value.trim().toLowerCase();
     const locationSearch = searchInputLocation.value.trim().toLowerCase();
-    console.log(locationSearch)
-
 
     const filteredFarmers = farmers.filter(farmer => {
-        return (farmer.id.toLowerCase() === idSearch ||
-                farmer.name.toLowerCase() === nameSearch ||
-                farmer.contact.toLowerCase() === contactSearch ||
-                farmer.location.toLowerCase() === locationSearch );
-    });
+        let match = true;
 
+        if (idSearch) {
+            match = match && farmer.id.toLowerCase() === idSearch;
+        }
+
+        if (nameSearch) {
+            match = match && farmer.name.toLowerCase() === nameSearch;
+        }
+
+        if (contactSearch) {
+            match = match && farmer.contact.toLowerCase() === contactSearch;
+        }
+
+        if (locationSearch) {
+            match = match && farmer.location.toLowerCase() === locationSearch;
+        }
+
+        return match; 
+    });
 
     renderFarmers(filteredFarmers);
 });
